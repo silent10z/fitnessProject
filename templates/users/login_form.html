@@ -1,0 +1,90 @@
+{% extends 'common/base.html'%}
+
+{% block content %}
+{% block title %} <title>회원 가입 페이지</title> {% endblock %}
+{% block css%}
+<style>
+    .registration {
+        width: 480px;
+        margin: 0 auto;
+    }
+    p {
+        text-align: center;
+    }
+    label {
+        width: 50%;
+        text-align: left;
+    }
+    .control-label {
+        width: 100%;
+    }
+    .registration .form-actions > button {
+        width: 49%;
+    }
+    input {
+        width:70%
+    }
+</style>
+{% endblock css%}
+<main id="main">
+    <!-- ======= Breadcrumbs Section ======= -->
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Portfolio Details</h2>
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li>Portfolio Details</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- Breadcrumbs Section -->
+
+    <!-- ======= Portfolio Details Section ======= -->
+    <section class="portfolio-details">
+      <div class="container">
+
+    <div class="card card-default registration">
+    <div class="card-header">
+        로그인 하기
+    </div>
+    <div class="card-body">
+        <form action="." method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group is-invalid">
+                    <div clas="form-control ">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input name="{{ field.html_name }}" id="{{ field.id_for_lable }}" class="form-control {% if field.errors|length > 0 %} is-invalid{% endif %}" type="{{ field.field.widget.input_type }}" value="{{ field.value|default_if_none:'' }}">
+                    {% for error in field.errors %}
+                        <label class="control-label text-danger" for="{{ field.id_for_label }}">{{ error }}</label>
+                    {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            <button class="btn btn-primary btn-block" type="submit">로그인하기</button>
+            <br>
+            <div class="form-actions">
+                <button class="btn btn-info" type="button" onclick="location.href='{% url 'users:agreement'%}'">회원가입</button>
+                <button class="btn btn-info " type="button" onclick="location.href='{% url 'users:recovery_email'%}'">아이디찾기</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+      </div>
+
+
+        <div class="portfolio-description">
+          <h2>This is an example of portfolio detail</h2>
+          <p>
+            Autem ipsum nam porro corporis rerum. Quis eos dolorem eos itaque inventore commodi labore quia quia. Exercitationem repudiandae officiis neque suscipit non officia eaque itaque enim. Voluptatem officia accusantium nesciunt est omnis tempora consectetur dignissimos. Sequi nulla at esse enim cum deserunt eius.
+          </p>
+        </div>
+      </div>
+    </section><!-- End Portfolio Details Section -->
+  </main><!-- End #main -->
+{% endblock content %}
+

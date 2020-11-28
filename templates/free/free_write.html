@@ -1,0 +1,85 @@
+{% extends 'common/base.html'%}
+{% load static %}
+{% block title %} <title>글쓰기</title> {% endblock %}
+{% block content %}
+
+
+
+  <main id="main">
+
+    <!-- ======= Breadcrumbs Section ======= -->
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Portfolio Details</h2>
+          <ol>
+            <li><a href="{% url 'users:index'%}">Home</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li>Portfolio Details</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- Breadcrumbs Section -->
+    <!-- ======= Portfolio Details Section ======= -->
+    <section class="portfolio-details">
+        <div class="container">
+            <div class="portfolio-details-container">
+                <form action="" method="POST"  enctype="multipart/form-data">
+                {% csrf_token %}
+                        <label>
+                        {{ form.top_fixed }}
+                    <span>상단에 표시하기</span>
+                        </label>
+                        <div class="card-header">
+                            {{ form.title }}
+                        </div>
+                        {{ form.content}}
+
+                                      <div class="card-footer" style="padding-left: 0px; margin-top:18px;">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        {{ form.upload_files }}
+                        <small id="help" class="form-text text-muted" style="margin-bottom: -15px;">
+                            &nbsp;&nbsp;[파일 업로드]&nbsp;&nbsp;<i class="fas fa-upload"></i>&nbsp;10MB 이하의 파일만 첨부 가능합니다. 여러 파일은 압축해서 업로드해주세요.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+                    <div class="text-right">
+                        <button type="submit" id="write" class="btn btn-primary">작성하기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section><!-- End Portfolio Details Section -->
+
+  </main><!-- End #main -->
+
+<script>
+    $(document).ready(function () {
+        $('#id_content').summernote({
+            placeholder: '내용을 입력해주세요.',
+            height: 500,
+            minHeight: 500,
+            maxHeight: 500,
+            lang: 'ko-KR',
+
+            toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'help']]
+            ]
+        });
+        $('p').css('margin-bottom','0')
+        $('.note-resizebar').css('display','none');
+    });
+</script>
+{% endblock content %}
+

@@ -1,0 +1,40 @@
+{% extends 'user/user_base.html'%}
+{% block content %}
+
+<p class="tip">환영 합니다.</p>
+
+<div class="cont">
+  <form action="" method="post">
+    {% csrf_token %}
+    <div class="form sign-in">
+      <h2>Welcome back,</h2>
+      {% for field in form %}
+
+      <label for="{{ field.id_for_label }}">
+        <span>{{ field.label }}</span>
+        <input name="{{ field.html_name }}" id="{{ field.id_for_lable }}" class="form-control {% if field.errors|length > 0 %} is-invalid{% endif %}" type="{{ field.field.widget.input_type }}" value="{{ field.value|default_if_none:'' }}">
+      </label>
+      {% for error in field.errors %}
+                        <label class="control-label text-danger" for="{{ field.id_for_label }}">{{ error }}</label>
+                    {% endfor %}
+      {% endfor %}
+      <p class="forgot-pass">Forgot password?</p>
+      <button type="submit" class="submit">Sign In</button>
+      <button type="button" class="fb-btn">Connect with <span>naver</span></button>
+    </div>
+  </form>
+  <div class="sub-cont">
+    <div class="img">
+      <div class="img__text m--up">
+        <h2>처음 이신가요?</h2>
+        <p>회원 가입후 여러 컨탠츠들을 즐겨보세요!</p>
+        <span class=""><a href="{% url 'users:create'%}">Sign Up</a></span>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock content %}

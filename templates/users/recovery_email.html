@@ -1,0 +1,111 @@
+{% extends 'common/base.html'%}
+
+{% block content %}
+{% block title %} <title>회원 가입 페이지</title> {% endblock %}
+{% block css%}
+<style>
+    .registration {
+        width: 480px;
+        margin: 0 auto;
+    }
+    p {
+        text-align: center;
+    }
+    label {
+        width: 50%;
+        text-align: left;
+    }
+    .control-label {
+        width: 100%;
+    }
+    .registration .form-actions > button {
+        width: 49%;
+    }
+    input {
+        width:70%
+    }
+</style>
+{% endblock css%}
+<main id="main">
+    <!-- ======= Breadcrumbs Section ======= -->
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Portfolio Details</h2>
+          <ol>
+            <li><a href="{% url 'users:index'%}">Home</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li>Portfolio Details</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- Breadcrumbs Section -->
+
+    <!-- ======= Portfolio Details Section ======= -->
+    <section class="portfolio-details">
+      <div class="container">
+          <div class="card card-default registration">
+            <div class="card-header">
+                로그인 하기
+            </div>
+            <div class="card-body">
+                <form action="." method="post">
+                {% csrf_token %}
+                    <div>
+                    {% csrf_token %}
+                        <label name="label_email" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                        {{ form.email }}
+                        <label name="label_username" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                        {{ form.username }}
+                        <small>
+                        등록하신 이름과 메일주소가 일치해야 합니다.
+                        </small>
+                    <div>
+                    <button class="btn btn-primary btn-lg btn-block" id="find_email" name="recovery_email" type="button">이메일찾기</button>
+                    </div>
+                    <div id="result_email">
+                    </div>
+                </form>
+
+            </div>
+      </div>
+    </div>
+    </section><!-- End Portfolio Details Section -->
+  </main><!-- End #main -->
+
+
+<script type="text/javascript">
+   $('#find_email').on('click', function(){
+        var username = $('#form_username').val();
+        var email = $('#form_email').val();
+        console.log(username, email)
+        $.ajax({
+            type: "POST",
+            url : "/users/recovery/email/",
+            dataType: "json",
+            data:{
+                'username': username,
+                'email' : email,
+                'csrfmiddlewaretoken': '{{csrf_token}}',
+            },
+            success: function(response){
+                $('#result_email').replaceWith(
+                    '<div id="result_id"><hr><div><span>입력된 정보로 가입된 아이디는 </span><span id="result_id">' +
+                                response.result_email +'</span><span> 입니다.</span></div><hr></div>')
+
+            },
+            error: function(){
+                if( username == "" || email == ""){
+                    alert('이름과 이메일을 입력해주세요.');
+                }else{
+                    alert('입력하신 정보가 일치하지 않거나 존재하지 않습니다.');
+                }
+            },
+
+        });
+
+   })
+</script>
+
+{% endblock content %}

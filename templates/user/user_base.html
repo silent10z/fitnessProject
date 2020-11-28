@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Login/Registration Form Transition</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+  <link rel="stylesheet" href="{% static 'login/style.css' %}">
+     <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+  <style>
+  .img:before{
+    background-image: url("{% static 'assets/img/fitness.jpg'%}")
+  }
+  {% block css%}
+
+  {% endblock css%}
+  </style>
+</head>
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags %}
+    <script>
+        alert("{{ message.message }}") <!-- message alert script -->
+    </script>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+<body>
+{% block content %}
+
+
+
+{% endblock content %}
+<script  src="{% static 'login/script.js' %}"></script>
+</body>

@@ -1,0 +1,97 @@
+{% extends 'common/base.html'%}
+
+{% block content %}
+{% block title %} <title>회원 가입 페이지</title> {% endblock %}
+{% block css%}
+<style>
+    .registration {
+        width: 480px;
+        margin: 0 auto;
+    }
+    p {
+        text-align: center;
+    }
+    label {
+        width: 50%;
+        text-align: left;
+    }
+    .control-label {
+        width: 100%;
+    }
+    .registration .form-actions > button {
+        width: 100%;
+    }
+    input {
+        width:70%
+    }
+</style>
+{% endblock css%}
+<main id="main">
+
+    <!-- ======= Breadcrumbs Section ======= -->
+<!--    {% if messages %}-->
+<!--        {% for message in messages %}-->
+<!--        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">-->
+<!--          {{ message }}-->
+<!--        </div>-->
+<!--        {% endfor %}-->
+<!--    {% endif %}-->
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Portfolio Details</h2>
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li>Portfolio Details</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- Breadcrumbs Section -->
+
+    <!-- ======= Portfolio Details Section ======= -->
+    <section class="portfolio-details">
+      <div class="container">
+        <div class="card card-default registration">
+    <div class="card-header">
+        회원가입
+    </div>
+    <div class="card-body">
+ <table>
+    <tr>
+        <td>이메일</td>
+        <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+        <td>이름</td>
+        <td>{{ user.username }}</td>
+    </tr>
+     <tr>
+        <td>핸드폰 번호</td>
+        <td>{{ user.hp }}</td>
+    </tr>
+    <tr>
+        <td>성별</td>
+        <td>{{ user.gender }}</td>
+    </tr>
+     {{user.date_joined}}
+
+</table>
+        <div>
+
+        </div>
+    </div>
+                 <br>
+          <button class="btn btn-primary btn-block" >정보 수정</button>
+          <button class="btn btn-primary btn-block" onclick="location.href='{% url 'users:password_edit'%}'" type="button">비밀번호 수정</button>
+          <button class="btn btn-danger btn-block" onclick="location.href='{% url 'users:delete'%}'" type="button">회원탈퇴</button>
+</div>
+
+      </div>
+    </section><!-- End Portfolio Details Section -->
+  </main><!-- End #main -->
+<script>
+
+</script>
+{% endblock content %}

@@ -1,0 +1,174 @@
+{% extends 'common/base.html'%}
+
+{% block content %}
+{% block title %} <title>게시판</title> {% endblock %}
+<main id="main">
+        <section class="breadcrumbs">
+            <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+            <h2>자유 게시판</h2>
+            <ol>
+                <li><a href="{% url 'users:index'%}">Home</a></li>
+                <li><a href="{% url 'free:list'%}">Freeboard</a></li>
+                <li>content Details</li>
+            </ol>
+            </div>
+          </div>
+        </section>
+<div class="container">
+<div class="card">
+    <!--제목,분류,작성일-->
+    <div class="card-header">
+        <strong>{{ free.title }}</strong>
+        <span>{{ free.registered_date|date:'Y.m.d. H:i' }}</span>
+    </div>
+    <div class="card-body">
+        <!--작성자, 조회수-->
+        <div>
+            <span>작성자 : {{ free.writer }}</span>
+            <span>조회수 : {{ free.hits }}</span>
+        </div>
+        <!--내용-->
+        <div>
+            {{ free.content | safe }}
+        </div>
+        {% if free.upload_files %}
+    <div class="col-12 text-right">
+    <span>첨부파일 :&nbsp;</span>
+    <a href="{% url 'free:free_download' free.id %}" >{{ free.filename|truncatechars:25 }}</a>
+    </div>
+{% endif %}
+    </div>
+</div>
+
+    <div>
+        <button class="btn btn-primary" onclick="location.href='{% url 'free:list'%}'">목록으로</button>
+        {%if free_auth %}
+        <button class="btn btn-info" onclick="location.href='{% url 'free:edit' free.id %}'">수정하기</button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#delete_modal" >삭제하기</button>
+        {% endif %}
+    </div>
+    <!--댓글창-->
+    <div class="card">
+    <div class="card-header">
+        <div class="col-md-12">
+            {% csrf_token %}
+            <div class="form-group row">
+                <textarea class="form-control" id="content_id" rows="3" placeholder="댓글을 입력해주세요."></textarea>
+            </div>
+            <div class="text-right" style="float:right">
+                <button id="comment_write" class="btn btn-sm">댓글달기</button>
+            </div>
+        </div>
+        <hr>
+        <div id="more_comment">
+            {% if comments %}
+                {% for comment in comments %}
+                <div id='{{ comment.id }}'>
+                    {% if comment.deleted %}
+                    <span>삭제된 댓글입니다.</span><hr>
+                    {% else %}
+                        {% if comment.writer == free.writer %}
+                        <strong>{{ comment.writer }}&nbsp;<span>(글쓴이)</span></strong>
+                        {% else  %}
+                        <strong>{{ comment.writer }}</strong>
+                        {% endif %}
+                        <span style="float:right">{{ comment.created }}</span>
+                        {% if comment.writer == request.user or request.user.level == '0' or request.user.level == '1' %}
+                        <div>
+                            <div style="white-space:pre-wrap; text-align:left;">{{ comment.content }}</div>
+                            <div style="text-align: right;">
+                                <a onclick="commentDelete('{{comment.id}}');">댓글삭제</a>
+                            </div>
+                        </div>
+                        <hr>
+                        {% else %}
+                        <div>
+                            <div style="white-space:pre-wrap; text-align:left;">{{ comment.content }}</div>
+                        </div>
+                        <hr>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class='{{ comment.id }}'></div>
+                {% endfor %}
+            {% endif %}
+            <input type="hidden" id="comment_writer" value={{request.user}}>
+            <div id="comment_list"></div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- 삭제하기 모달창 -->
+    <div id="delete_modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">삭제경고</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>게시글을 삭제하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="delete_modal()" type="button" class="btn btn-dark">삭제하기</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">취소하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function delete_modal() {
+        location.replace('/free/{{ free.id }}/delete/');
+    }
+
+     $(document).ready(function () {
+        $('#comment_write').click(function () {
+            var content= $("#content_id").val();
+            var writer= $("#comment_writer").val();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'free:comment_write' free.id %}",
+                dataType: "json",
+                data: {
+                    'writer': writer,
+                    'content': content,
+                    'csrfmiddlewaretoken': '{{csrf_token}}',
+                },
+                success: function (response) {
+                    if (response.self_comment) {
+                        $('#comment_list').append(
+                           '<div><div id='+response.comment_id+'><strong>'+response.writer+'&nbsp;<span>'+response.self_comment+'</span></strong>'+
+                           '<span style="float:right;">'+response.created+'</span>'+
+                           '<div><div style="white-space:pre-wrap; text-align:left;">'+response.content+
+                           '</div><div style="text-align:right;"><a onclick="commentDelete('+response.comment_id+');">댓글삭제</a></div></div><hr></div><div class='+response.comment_id+'></div>'
+                        );
+                    }
+                    else{
+                        $('#comment_list').append(
+                            '<div><div id='+response.comment_id+'><strong>'+response.writer+'</strong>'+
+                            '<span style="float:right;">'+response.created+'</span>'+
+                            '<div><div style="white-space:pre-wrap; text-align:left;">'+response.content+
+                            '</div><div style="text-align:right;"><a onclick="commentDelete('+response.comment_id+');">댓글삭제</a></div></div><hr></div><div class='+response.comment_id+'></div>'
+                        );
+                    }
+                    $('#content_id').val("");
+                },
+                error: function () {
+                    if ($('#content_id').val()=="") {
+                        alert('댓글을 입력해주세요.');
+                    }
+                },
+            })
+        });
+    });
+</script>
+</div>
+
+</main>
+{% endblock content%}
