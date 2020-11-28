@@ -96,10 +96,13 @@ def free_detail_view(request, pk):
     
     # 댓글 값 보내기
     comment = Comment.objects.filter(post=pk).order_by('created')
+    comment_count = comment.exclude(deleted=True).count()
     context = {
         'free': free,
         'free_auth': free_auth,
-        'comments': comment
+        'comments': comment,
+        'comment_count': comment_count,
+
     }
     response = render(request, 'free/free_detail.html', context)
 
@@ -202,7 +205,7 @@ def free_download_view(request, pk):
 # =============================== 댓글 view ===========================
 
 
-# 댁글 쓰기
+# 댓글 쓰기
 @login_message_required
 def comment_write_view(request, pk):
     # 게시판  정보 가져오기
@@ -213,13 +216,16 @@ def comment_write_view(request, pk):
     # content 가 존재한다면 comment object를 생하고 저장
     if content:
         comment = Comment.objects.create(post=post, content=content, writer=request.user)
+        comment_count = Comment.objects.filter(post=pk).exclude(deleted=True).count()
+        post.comments = comment_count
         post.save()
         # json 형식으로 보낼 데이터 값들을 만들기
         data ={
             'writer': writer,
-            'cotent': content,
+            'content': content,
             'created': '방금전',
-            'comment_id': comment.id
+            'comment_id': comment.id,
+            'comment_count': comment_count,
         }
         # 게시판 유져와 댓글 유져가 같으면 글쓴이로 나타내어주기
         if request.user == post.writer:
@@ -238,8 +244,11 @@ def comment_delete_view(request, pk):
     if request.user == target_comment.writer:
         target_comment.deleted = True
         target_comment.save()
+        comment_count = Comment.objects.filter(post=pk).exclude(deleted=True).count()
+        post.comments = comment_count
         post.save()
         data ={
-            'comment_id': comment_id
+            'comment_id': comment_id,
+            "comment_count": comment_count
         }
         return  HttpResponse(json.dumps(data, cls=DjangoJSONEncoder), content_type='applcation/json')

@@ -18,12 +18,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     )
 
+    LEVEL_CHOICES = (
+        ("3", "Lv3_미인증사용자"),
+        ("2", "Lv2_인증사용자"),
+        ("1", "Lv1_트레이너"),
+        ("0", "Lv0_개발자"),
+    )
+
     email = models.EmailField(max_length=254, verbose_name="이메일", unique=True)
     password = models.CharField(max_length=256, verbose_name="비밀번호")
     hp = models.IntegerField(verbose_name="핸드폰번호", null=True, unique=True)
     username = models.CharField(max_length=30, verbose_name="이름", blank=False)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=30)
     auth = models.CharField(max_length=10, verbose_name="인증번호", null=True)
+    level = models.CharField(choices=LEVEL_CHOICES, max_length=18, verbose_name="등급", default=3)
     is_staff = models.BooleanField(verbose_name='스테프',
                                    default=False,
     )

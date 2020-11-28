@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'username', 'gender', 'joined_at', 'last_login_at', 'is_superuser', 'is_active')
+    list_display = ('id', 'email', 'username', 'gender', 'level', 'joined_at', 'last_login_at', 'is_superuser', 'is_active')
     list_display_links = ('id', 'email')
     exclude = ('password',)
 

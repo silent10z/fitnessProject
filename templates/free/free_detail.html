@@ -2,6 +2,32 @@
 
 {% block content %}
 {% block title %} <title>게시판</title> {% endblock %}
+    <!-- 삭제하기 모달창 -->
+    <div id="delete_modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">삭제경고</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>게시글을 삭제하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="delete_modal()" type="button" class="btn btn-dark">삭제하기</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">취소하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+
+
 <main id="main">
         <section class="breadcrumbs">
             <div class="container">
@@ -40,26 +66,35 @@
     </div>
 {% endif %}
     </div>
-</div>
-
-    <div>
+        <div>
         <button class="btn btn-primary" onclick="location.href='{% url 'free:list'%}'">목록으로</button>
         {%if free_auth %}
         <button class="btn btn-info" onclick="location.href='{% url 'free:edit' free.id %}'">수정하기</button>
         <button class="btn btn-danger" data-toggle="modal" data-target="#delete_modal" >삭제하기</button>
         {% endif %}
     </div>
+</div>
+{% if comments %}
+<div id="hide_more_button"><a id=hide_button_count>&nbsp;댓글 접기 &middot;&nbsp;{{ comment_count }}개의 댓글<br></a></div>
+<div id="show_more_button" style="display:none;"><a id=show_button_count>&nbsp;댓글 펼치기 &middot;&nbsp;{{ comment_count }}개의 댓글<br></a></div>
+{% else %}
+<div id="hide_more_button"><a id=hide_button_count><br></a></div>
+<div id="show_more_button" style="display:none;"><a id=show_button_count><br></a></div>
+{% endif %}
+
     <!--댓글창-->
     <div class="card">
     <div class="card-header">
+        댓글창
         <div class="col-md-12">
             {% csrf_token %}
             <div class="form-group row">
                 <textarea class="form-control" id="content_id" rows="3" placeholder="댓글을 입력해주세요."></textarea>
+                <div class="text-right" style="float:right">
+                    <button id="comment_write" class="btn btn-sm btn-info">댓글달기</button>
+                </div>
             </div>
-            <div class="text-right" style="float:right">
-                <button id="comment_write" class="btn btn-sm">댓글달기</button>
-            </div>
+
         </div>
         <hr>
         <div id="more_comment">
@@ -74,7 +109,11 @@
                         {% else  %}
                         <strong>{{ comment.writer }}</strong>
                         {% endif %}
-                        <span style="float:right">{{ comment.created }}</span>
+                        {% if comment.created_string == False %}
+                         <span style="float:right;">{{ comment.created|date:'m월 d일' }}</span>
+                         {% else %}
+                        <span style="float:right;">{{ comment.created_string }}</span>
+                        {% endif %}
                         {% if comment.writer == request.user or request.user.level == '0' or request.user.level == '1' %}
                         <div>
                             <div style="white-space:pre-wrap; text-align:left;">{{ comment.content }}</div>
@@ -101,27 +140,7 @@
 </div>
 
 
-    <!-- 삭제하기 모달창 -->
-    <div id="delete_modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">삭제경고</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>게시글을 삭제하시겠습니까?</p>
-            </div>
-            <div class="modal-footer">
-                <button onclick="delete_modal()" type="button" class="btn btn-dark">삭제하기</button>
-                <button type="button" class="btn btn-light" data-dismiss="modal">취소하기</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+</main>
 <script type="text/javascript">
     function delete_modal() {
         location.replace('/free/{{ free.id }}/delete/');
@@ -167,8 +186,39 @@
             })
         });
     });
-</script>
-</div>
+   function commentDelete(value) {
+        var comment_id = value;
+        var delete_warning = confirm('댓글을 삭제하시겠습니까?');
+        if (delete_warning == true) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'free:comment_delete' free.id %}",
+                dataType: "json",
+                data: {
+                    'comment_id': comment_id,
+                    'csrfmiddlewaretoken': '{{csrf_token}}',
+                },
+                success: function (response) {
+                    $('#'+response.comment_id).replaceWith('<span style="color:gray;">삭제된 댓글입니다.</span><hr>');
+                },
+                error: function () {
+                    alert('본인 댓글이 아닙니다.');
+                },
+            });
+        }
+    }
 
-</main>
+   $('#hide_more_button').click(function(){
+        $('#more_comment').hide();
+        $('#show_more_button').show();
+        $('#hide_more_button').hide();
+    });
+    $('#show_more_button').click(function(){
+        $('#more_comment').show();
+        $('#show_more_button').hide();
+        $('#hide_more_button').show();
+    });
+
+</script>
+
 {% endblock content%}
