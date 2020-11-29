@@ -86,7 +86,7 @@ def free_detail_view(request, pk):
 
     free = get_object_or_404(Free, pk=pk)
     # 본인 게시글 확인 context
-    if request.user == free.writer:
+    if request.user == free.writer or request.user.level == '0':
         free_auth = True
     else:
         free_auth = False
@@ -241,7 +241,7 @@ def comment_delete_view(request, pk):
     comment_id = request.POST.get('comment_id')
     target_comment = Comment.objects.get(pk=comment_id)
 
-    if request.user == target_comment.writer:
+    if request.user == target_comment.writer or request.user.level == '0':
         target_comment.deleted = True
         target_comment.save()
         comment_count = Comment.objects.filter(post=pk).exclude(deleted=True).count()

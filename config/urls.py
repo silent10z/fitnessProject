@@ -23,5 +23,6 @@ urlpatterns = [
     path('users/', include('users.urls', namespace="users")),
     path('free/', include('free.urls', namespace='free')),
     path('summernote/', include('django_summernote.urls')),
+    path('cal/', include('cal.urls', namespace='cal')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

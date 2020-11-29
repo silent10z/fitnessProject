@@ -30,8 +30,8 @@ class Free(models.Model):
 
     class Meta:
         db_table = 'free_board'
-        verbose_name = '공지사항'
-        verbose_name_plural = '공지사항'
+        verbose_name = '자유게시판'
+        verbose_name_plural = '자유게시판'
 
     @property
     def created_string(self):

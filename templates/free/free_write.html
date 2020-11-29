@@ -28,21 +28,22 @@
             <div class="portfolio-details-container">
                 <form action="" method="POST"  enctype="multipart/form-data">
                 {% csrf_token %}
+                {% if request.user.level == '0' or  request.user.level == '1' %}
                         <label>
                         {{ form.top_fixed }}
                     <span>상단에 표시하기</span>
                         </label>
+                {% endif  %}
                         <div class="card-header">
                             {{ form.title }}
                         </div>
                         {{ form.content}}
-
                                       <div class="card-footer" style="padding-left: 0px; margin-top:18px;">
                 <div class="form-group">
                     <div class="col-sm-12">
                         {{ form.upload_files }}
                         <small id="help" class="form-text text-muted" style="margin-bottom: -15px;">
-                            &nbsp;&nbsp;[파일 업로드]&nbsp;&nbsp;<i class="fas fa-upload"></i>&nbsp;10MB 이하의 파일만 첨부 가능합니다. 여러 파일은 압축해서 업로드해주세요.
+                            &nbsp;&nbsp;[파일 업로드]&nbsp;&nbsp;&nbsp;10MB 이하의 파일만 첨부 가능합니다. 여러 파일은 압축해서 업로드해주세요.
                         </small>
                     </div>
                 </div>

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'free.apps.FreeConfig',
     'django_summernote',
+    'cal.apps.CalConfig',
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,5 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+CALENDARIUM_SHIFT_WEEKSTART = -1
