@@ -1,57 +1,88 @@
-{% extends 'cal/base.html' %}
+{% extends 'common/base.html' %}
+{% load static %}
+
 
 {% block content %}
 <style>
-  #header{
-    position:relative;
-   }
-
-    .calendar {
-  width: 98%;
-  margin: auto;
-  font-size: 13px;
+  .left {
+  float: left;
 }
 
-.calendar tr, .calendar td {
-  border: 1px solid black;
+.right {
+  float: right;
 }
 
-.calendar th {
-  padding: 10px;
-  text-align: center;
-  font-size: 18px;
+.btn {
+  outline: none;
+  color: black;
+  background-color: transparent;
+  box-shadow: 0 0 0 0;
 }
 
-.calendar td {
-  width: 200px;
-  height: 150px;
-  padding: 20px 0px 0px 5px;
+.clearfix {
+  margin: 15px;
 }
 
-.month {
-  font-size: 25px;
-}
 
-.date {
-  font-size: 16px;
-}
-
-ul {
-  height: 100%;
-  padding: 0px 5px 0px 20px;
-}
-
-a {
-  color: #17a2b8;
-}
 </style>
-{% if calendar %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'assets/css/cal/styles.css' %}">
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>일정표 </h2>
+          <ol>
+            <li><a href="{% url 'users:index'%}">Home</a></li>
+
+            <li><a href="{% url 'cal:new'%}">test</a></li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- Breadcrumbs Section -->
+<div >
+	<a class="btn btn-info left" href="{'% url 'cal:calendar' %}?{{ prev_month }}"> Previous Month </a>
+	<a class="btn btn-info right" href="{'% url 'cal:calendar' %}?{{ next_month }}"> Next Month </a>
+    <a class="btn btn-info right" href="{% url 'cal:new' %}"> New Event </a>
+</div>
 {{ calendar }}
-{% endif %}
-<footer id="footer">
-    왜 속성들이 아래로 가지 않는건가
-</footer>
-{% endblock %}
+
+
+<script>
+    $(document).ready(function(){
+       let today = new Date();
+       let fomatday = getFormatDate(today)
+       console.log(fomatday)
+
+       $('td[name=day_td]').each(function(i){
+            $('td[name=day_td]').eq(i).hover(function(){
+                $('td[name=day_td]').eq(i).css('cursor', 'pointer')
+            })
+
+            $('td[name=day_td]').eq(i).click(function(){
+
+                location.href = '/cal/event/detail/'+$('td[name=day_td]').eq(i).attr("value")
+            })
+            if ($('td[name=day_td]').eq(i).attr("value") == fomatday){
+                $('td[name=day_td]').eq(i).css("background-color", "#F78181")
+            };
+
+       });
+    });
+
+
+function getFormatDate(date){
+    var year = date.getFullYear();              //yyyy
+    var month = (1 + date.getMonth());          //M
+    month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+    var day = date.getDate();                   //d
+    day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
+    return  year + '' + month + '' + day;       //'-' 추가하여 yyyy-mm-dd 형태 생성 가능
+}
+</script>
+
+{% endblock content%}
 
 
 

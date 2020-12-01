@@ -35,7 +35,7 @@ class Free(models.Model):
 
     @property
     def created_string(self):
-        time = datetime.now(tz=timezone.utc) - self.registered_date
+        time = datetime.now() - self.registered_date
 
         if time < timedelta(minutes=1):
             return '방금 전'
@@ -44,7 +44,7 @@ class Free(models.Model):
         elif time < timedelta(days=1):
             return str(int(time.seconds / 3600)) + '시간 전'
         elif time < timedelta(days=7):
-            time = datetime.now(tz=timezone.utc).date() - self.registered_date.date()
+            time = datetime.now().date() - self.registered_date.date()
             return str(time.days) + '일 전'
         else:
             return False
@@ -67,7 +67,7 @@ class Comment(models.Model):
 
     @property
     def created_string(self):
-        time = datetime.now(tz=timezone.utc) - self.created
+        time = datetime.now() - self.created
 
         if time < timedelta(minutes=1):
             return '방금 전'
@@ -76,7 +76,7 @@ class Comment(models.Model):
         elif time < timedelta(days=1):
             return str(int(time.seconds / 3600)) + '시간 전'
         elif time < timedelta(days=7):
-            time = datetime.now(tz=timezone.utc).date() - self.created.date()
+            time = datetime.now().date() - self.created.date()
             return str(time.days) + '일 전'
         else:
             return False

@@ -1,0 +1,119 @@
+{% extends 'common/base.html'%}
+{% block content%}
+
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>{{ this_day }} </h2>
+          <ol>
+            <li><a href="{% url 'users:index'%}">Home</a></li>
+
+            <li><a href="{% url 'cal:new'%}">test</a></li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- Breadcrumbs Section -->
+{{ form }}
+
+
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">set</th>
+                    <th scope="col">Weight</th>
+                    <th scope="col">Reps</th>
+                    <th scope="col">check</th>
+                </tr>
+            </thead>
+            {% for event in events %}
+            <tbody>
+                <tr>
+                    <td scope="col">{{ event.title }}</td>
+                    <td scope="col">{{ event.work_set|default:0 }}</td>
+                    <td scope="col">3</td>
+                    <td scope="col">{{ event.repeat_count| default:0 }}</td>
+                    {%if event.workout_done == True %}
+                    <td scope="col">
+                        <input  class="checked" name="checked" type="checkbox" value="{{ event.id }}" checked>
+                    </td>
+                    {% else %}
+                    <td scope="col">
+                        <input  class='checked' name="checked" type="checkbox" value="{{event.id}}">
+                    </td>
+                    {% endif %}
+                </tr>
+            </tbody>
+            {% endfor %}
+
+        </table>
+        <div class="container">
+        <input type="hidden" name="checklist" id="check_list" value="">
+        <input type="hidden" name="unchecklist" id="uncheck_list" value="">
+        <button type="submit" class="btn btn-primary" onclick="getlist()">확인</button>
+        </div>
+
+
+     </form>
+</div>
+
+<script>
+
+</script>
+
+<script>
+
+function getlist(){
+
+      var checkedarr = new Array();
+      var uncheckedarr = new Array();
+      $('input:checkbox[name="checked"]').each(function(){
+
+        if(this.checked){
+            checkedarr.push(this.value);
+        }else{
+            uncheckedarr.push(this.value);
+        }
+    })
+    $('#check_list').val(checkedarr)
+    $('#uncheck_list').val(uncheckedarr)
+}
+
+
+</script>
+<!--  var checked = $("input[name=checked]").length-->
+<!--    var checkedarr  = new Array(checked);-->
+<!--    for(var i=0; i<checked; i++){-->
+<!--        checkedarr[i] = $("input[name=unchecked]").eq(i).val();-->
+<!--        console.log(checkedarr[i])-->
+<!--    }-->
+<!--<script>-->
+
+<!--    $(document).ready(function(){-->
+<!--        $('.unchecked').click(function(){-->
+<!--            var value = $('#unchecked').val()-->
+<!--            console.log(value)-->
+<!--            $.ajax({-->
+<!--            type : "POST",-->
+<!--            url : window.location.pathname,-->
+<!--            dataType: "json",-->
+<!--            data : {-->
+<!--                'csrfmiddlewaretoken': '{{csrf_token}}'-->
+<!--            },-->
+<!--            success: function(result){-->
+<!--                console.log(result)-->
+<!--            }-->
+<!--        })-->
+<!--        });-->
+
+<!--    });-->
+
+<!--</script>-->
+
+
+{% endblock content%}
