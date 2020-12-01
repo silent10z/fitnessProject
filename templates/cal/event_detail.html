@@ -19,6 +19,7 @@
 
 
 <div class="container">
+    {% if events %}
     <form action="" method="post">
         {% csrf_token %}
         <table class="table table-borderless">
@@ -49,13 +50,21 @@
                     {% endif %}
                 </tr>
             </tbody>
-            {% endfor %}
+         {% endfor %}
 
         </table>
         <div class="container">
         <input type="hidden" name="checklist" id="check_list" value="">
         <input type="hidden" name="unchecklist" id="uncheck_list" value="">
         <button type="submit" class="btn btn-primary" onclick="getlist()">확인</button>
+        {% else%}
+         <div style="height:760px">
+
+             <h1 style="align:center"> 운동 일정을 추가해 주세요!</h1>
+
+         </div>
+
+        {% endif %}
         </div>
 
 

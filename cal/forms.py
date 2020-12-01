@@ -13,6 +13,8 @@ class EventForm(ModelForm):
 
   def __init__(self, *args, **kwargs):
     super(EventForm, self).__init__(*args, **kwargs)
+    self.fields['work_weight'].required = False
+    self.fields['duration'].required = False
     # input_formats parses HTML5 datetime-local input to datetime field
     # self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)
 
