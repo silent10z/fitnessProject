@@ -8,4 +8,5 @@ urlpatterns= [
     url('event/new/', views.event, name='new'),
     url(r'^event/edit/(?P<id>\d+)/$', views.event, name='event_edit'),
     url(r'^event/detail/(?P<day>\d+)/$', views.event_detail, name='event_detail'),
+    url('statistics/', views.statistics, name='statistics'),
 ]

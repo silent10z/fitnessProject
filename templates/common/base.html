@@ -44,7 +44,7 @@
     <div class="container">
 
       <div id="logo" class="pull-left">
-<!--        <a href="index.html"><img src="assets/img/logo.png" alt=""></a>-->
+<!--      <a href="{% url 'users:index' %}"><img src="{% static 'assets/img/logo.png'%}" alt=""></a>-->
         <!-- Uncomment below if you prefer to use a text logo -->
         <h1><a href="{% url 'users:index' %}">FITP</a></h1>
       </div>
@@ -54,7 +54,7 @@
           <li class="menu"><a href="{% url 'users:index'%}">Home</a></li>
           <li><a href="{% url 'free:list'%}">게시판</a></li>
           <li><a href="{% url 'cal:calendar'%}">일정</a></li>
-          <li><a href="#portfolio">Portfolio</a></li>
+          <li><a href="{% url 'cal:statistics'%}">통계</a></li>
           <li class="menu-has-children"><a href="">Drop Down</a>
             <ul>
               <li><a href="#">Drop Down 1</a></li>

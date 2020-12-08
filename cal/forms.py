@@ -9,12 +9,13 @@ class EventForm(ModelForm):
     widgets = {
       # 'end_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
     }
-    fields = ['title', 'work_weight', 'duration', 'work_set', 'repeat_count']
+    fields = ['title', 'work_weight', 'duration', 'work_set', 'repeat_count', 'break_time']
 
   def __init__(self, *args, **kwargs):
     super(EventForm, self).__init__(*args, **kwargs)
     self.fields['work_weight'].required = False
     self.fields['duration'].required = False
+    self.fields['break_time'].required = False
     # input_formats parses HTML5 datetime-local input to datetime field
     # self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)
 
